@@ -1,0 +1,107 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Impex Webservice",
+        "version": "1.0"
+    },
+    "tags": [
+        {
+            "name": "Impex"
+        }
+    ],
+    "paths": {
+        "/import": {
+            "post": {
+                "tags": [
+                    "Impex"
+                ],
+                "summary": "Request an Impex import",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "impex": {
+                                        "type": "string",
+                                        "format": "base64",
+                                        "required": true
+                                    }
+                                }
+                            },
+                            "example": {
+                                "impex": "TG9yZW0gaXBzdW0gZG9sciBzaXI="
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Import request was successful handed over and queued for processing.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "requestId": {
+                                            "type": "string",
+                                            "format": "uuid",
+                                            "required": true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/import/{requestId}": {
+            "get": {
+                "tags": [
+                    "Impex"
+                ],
+                "summary": "Requests the status of the specified processing.",
+                "description": "Requests the status of the specified processing. If such processing is known at least its status will be returned. This can be PENDING (waiting to start processing), RUNNING (processing is actually happening), FINISHED (the processing has finished successfully) or FAILED (at least one error occurred while processing).",
+                "parameters": [
+                    {
+                        "name": "requestId",
+                        "in": "path",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The stats of the requested processing.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "enum": [
+                                                "PENDING",
+                                                "RUNNING",
+                                                "FINISHED",
+                                                "FAILED"
+                                            ],
+                                            "required": true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No processing found for given request id."
+                    }
+                }
+            }
+        }
+    }
+}

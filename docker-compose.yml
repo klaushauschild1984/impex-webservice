@@ -1,0 +1,15 @@
+version: "3"
+
+services:
+    swagger-ui:
+        image: swaggerapi/swagger-ui
+        ports:
+            - 8000:8080
+        environment:
+            URL: json/impexws.json
+            DEFAULT_MODELS_EXPAND_DEPTH: 99
+            DEFAULT_MODEL_RENDERING: model
+            DOC_EXPANSION: full
+        volumes:
+        -   .:/usr/share/nginx/html/json
+        restart: always
